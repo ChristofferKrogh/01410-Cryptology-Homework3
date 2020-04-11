@@ -20,6 +20,8 @@ def factor(n):
     p = int(math.sqrt(d**2 + n)) - d
     q = 2*d + p
 
+    print(f"d = {d}")
+
     return p, q
 
 

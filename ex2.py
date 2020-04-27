@@ -35,18 +35,12 @@ class El_Gamal:
         print(f"k_inv: {k_inv}")
         gamma = pow(self.alpha, k, self.p)
         x = self.Hash(m)
-        delta = int((x - self.a * gamma)*k_inv % (self.p - 1))
+        delta = int((x - self.a * gamma) * k_inv % (self.p - 1))
         return (gamma, delta)
 
     def verify(self, gamma, delta, m):
         x = self.Hash(m)
-        lhs = pow(self.beta, gamma, self.p) * pow(gamma, delta, self.p)
-        print(f"lhs: {lhs}")
-
-        rhs = pow(self.alpha, x, self.p)
-        print(f"rhs: {rhs}")
-
-        return lhs == rhs
+        return pow(self.beta, gamma, self.p) * pow(gamma, delta, self.p) % self.p == pow(self.alpha, x, self.p)
 
 
 def main():

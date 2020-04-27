@@ -14,7 +14,7 @@ class El_Gamal:
 
     def Hash(self, m):
         n = 2051152801041163
-        # H(m) = 8 ** m & n
+        # H(m) = 8 ** m % n
         return pow(8, m, n)
 
     def is_primitive(self, alpha, p ,q):

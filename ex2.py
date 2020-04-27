@@ -8,14 +8,13 @@ class El_Gamal:
         q = int((p - 1) / 2)
         self.alpha = self.find_primitive(self.p, q)
         # Randomly choose the private key a from Z_{p-1}
-        # TODO: should a just be chosen at random???
         self.a = random.randint(2, self.p - 2)
         # beta = alpha ** a % p
         self.beta = pow(self.alpha, self.a, self.p)
 
     def Hash(self, m):
         n = 2051152801041163
-        # 8 ** m & n
+        # H(m) = 8 ** m & n
         return pow(8, m, n)
 
     def is_primitive(self, alpha, p ,q):
@@ -32,7 +31,6 @@ class El_Gamal:
     def signature(self, m):
         k = 1234567
         k_inv = h2.findMultiplicativeInverse(k, self.p - 1)
-        print(f"k_inv: {k_inv}")
         gamma = pow(self.alpha, k, self.p)
         x = self.Hash(m)
         delta = int((x - self.a * gamma) * k_inv % (self.p - 1))
@@ -54,8 +52,8 @@ def main():
     print("\nExercise 3.2.3")
     m = 163959
     gamma, delta = el_gamal.signature(m)
-    print(f"Signature: {(gamma, delta)}")
-    print(f"Is signature verified? {el_gamal.verify(gamma, delta, m)}")
+    print(f" Signature: {(gamma, delta)}")
+    print(f" Is signature verified? {el_gamal.verify(gamma, delta, m)}")
 
 
 if __name__ == "__main__":

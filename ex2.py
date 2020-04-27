@@ -1,4 +1,5 @@
 import random
+import math
 
 class El_Gamal:
     def __init__(self, p):
@@ -7,14 +8,17 @@ class El_Gamal:
         self.alpha = self.find_primitive(self.p, q)
         # Randomly choose the private key a from Z_{p-1}
         # TODO: should a just be chosen at random???
-        self.a = random.randint(1, self.p - 2)
-        # decryption takes a long time with a large private key
-        self.a = 2525
+        self.a = random.randint(2, self.p - 2)
         # beta = alpha ** a % p
         self.beta = pow(self.alpha, self.a, self.p)
 
+    def Hash(self, m):
+        n = 2051152801041163
+        # 8 ** m & n
+        return pow(8, m, n)
+
     def is_primitive(self, alpha, p ,q):
-        # pow(alpha, q, p) computes (alpha ** q) % p efficiently
+        # (alpha ** q) % p
         return pow(alpha, q, p) != 1 and pow(alpha, 2, p) != 1
 
     def find_primitive(self, p, q):
@@ -24,13 +28,26 @@ class El_Gamal:
 
         return alpha
 
-    def encrypt(self, m, k):
-        y1 = pow(self.alpha, k, self.p)
-        y2 = pow(m * self.beta, k, self.p)
-        return y1, y2
+    def signature(self, m):
+        k = 1234567
+        gamma = pow(self.alpha, k, self.p)
+        x = self.Hash(m)
+        delta = (x - self.a * gamma)*(1/k) % (self.p - 1)
+        return (gamma, delta)
 
-    def decrypt(self, y1, y2):
-        return (y2 / (y1 ** self.a)) % self.p
+    def verify(self, gamma, delta, m):
+        x = self.Hash(m)
+
+        lhs1 = pow(self.beta, gamma, self.p)
+        lhs2 = pow(gamma, delta, self.p)
+        lhs = lhs1 * lhs2
+        print(f"lhs: {lhs}")
+
+        rhs = pow(self.alpha, x, self.p)
+        print(f"rhs: {rhs}")
+
+        return lhs == rhs
+
 
 def main():
     # Exercise 3.2.2
@@ -42,11 +59,9 @@ def main():
     # Exercise 3.2.3
     print("\nExercise 3.2.3")
     m = 163959
-    k = 1234567
-    # TODO: implement encryption and decryption correctly
-    y1, y2 = el_gamal.encrypt(m, k)
-    print(f"y1: {y1}, y2: {y2}")
-    print(f"Recovered message: {el_gamal.decrypt(y1, y2)}")
+    gamma, delta = el_gamal.signature(m)
+    print(f"Signature: {(gamma, delta)}")
+    print(f"Is signature verified? {el_gamal.verify(int(gamma), int(delta), m)}")
 
 
 

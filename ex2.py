@@ -1,4 +1,5 @@
 import random
+import homework2_part1 as h2
 
 class El_Gamal:
     def __init__(self, p):
@@ -47,7 +48,7 @@ def main():
     y1, y2 = el_gamal.encrypt(m, k)
     print(f"y1: {y1}, y2: {y2}")
     print(f"Recovered message: {el_gamal.decrypt(y1, y2)}")
-
+    print(f"multiplicative inverse: {h2.findMultiplicativeInverse(5, 35)}")
 
 
 if __name__ == "__main__":

@@ -31,17 +31,16 @@ class El_Gamal:
 
     def signature(self, m):
         k = 1234567
+        k_inv = h2.findMultiplicativeInverse(k, self.p - 1)
+        print(f"k_inv: {k_inv}")
         gamma = pow(self.alpha, k, self.p)
         x = self.Hash(m)
-        delta = (x - self.a * gamma)*(1/k) % (self.p - 1)
+        delta = int((x - self.a * gamma)*k_inv % (self.p - 1))
         return (gamma, delta)
 
     def verify(self, gamma, delta, m):
         x = self.Hash(m)
-
-        lhs1 = pow(self.beta, gamma, self.p)
-        lhs2 = pow(gamma, delta, self.p)
-        lhs = lhs1 * lhs2
+        lhs = pow(self.beta, gamma, self.p) * pow(gamma, delta, self.p)
         print(f"lhs: {lhs}")
 
         rhs = pow(self.alpha, x, self.p)
@@ -62,8 +61,7 @@ def main():
     m = 163959
     gamma, delta = el_gamal.signature(m)
     print(f"Signature: {(gamma, delta)}")
-    print(f"Is signature verified? {el_gamal.verify(int(gamma), int(delta), m)}")
-    print(f"multiplicative inverse: {h2.findMultiplicativeInverse(5, 35)}")
+    print(f"Is signature verified? {el_gamal.verify(gamma, delta, m)}")
 
 
 if __name__ == "__main__":
